@@ -8,6 +8,11 @@ class Cat < ActiveRecord::Base
 
   attr_accessible :age, :birth_date, :color, :name, :sex
 
+  has_many(
+    :rental_requests,
+    :class => "CatRentalRequest",
+  )
+
   validates(
     :age,
     :birth_date,
