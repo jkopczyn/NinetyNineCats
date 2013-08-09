@@ -1,4 +1,10 @@
 class CatsController < ApplicationController
+  def edit
+    @cat = Cat.find(params[:id])
+
+    render :edit
+  end
+
   def index
     @cats = Cat.all
 
@@ -9,5 +15,11 @@ class CatsController < ApplicationController
     @cat = Cat.find(params[:id])
 
     render :show
+  end
+
+  def update
+    @cat = Cat.find(params[:id])
+    @cat.update_attributes!(params[:cat])
+    redirect_to cat_url(@cat)
   end
 end
