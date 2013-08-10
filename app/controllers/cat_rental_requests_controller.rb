@@ -11,14 +11,14 @@ class CatRentalRequestsController < ApplicationController
     redirect_to cat_url(@rental_request.cat)
   end
 
-  def new
-    @rental_request = CatRentalRequest.new
-  end
-
   def deny
     @rental_request = CatRentalRequest.find(params[:id])
     @rental_request.deny!
 
     redirect_to cat_url(@rental_request.cat_id)
+  end
+
+  def new
+    @rental_request = CatRentalRequest.new
   end
 end
