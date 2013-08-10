@@ -9,6 +9,8 @@ class CatRentalRequest < ActiveRecord::Base
 
   belongs_to :cat
 
+  before_validation :assign_pending_status
+
   validates(
     :cat_id,
     :end_date,
@@ -22,6 +24,10 @@ class CatRentalRequest < ActiveRecord::Base
   validate :does_not_overlap_approved_request
 
   private
+  def assign_pending_status
+    self.status ||= "PENDING"
+  end
+
   def does_not_overlap_approved_request
     conditions = <<-SQL
       ((cat_id = :cat_id)
