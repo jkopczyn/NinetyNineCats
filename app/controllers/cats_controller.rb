@@ -1,4 +1,6 @@
 class CatsController < ApplicationController
+  # force evaluation of current_cat
+  before_filter :current_cat, :only => [:edit, :show, :update]
   before_filter :require_cat_ownership!, :only => [:edit, :update]
   
   def create
@@ -10,9 +12,6 @@ class CatsController < ApplicationController
   end
 
   def edit
-    # force evaluation of current_cat
-    current_cat
-
     render :edit
   end
 
@@ -29,21 +28,18 @@ class CatsController < ApplicationController
   end
 
   def show
-    # force evaluation of current_cat
-    current_cat
-
     render :show
   end
 
   def update
     current_cat.update_attributes!(params[:cat])
-    redirect_to cat_url(@cat)
+    redirect_to cat_url(current_cat)
   end
 
   private
   include CatsHelper
 
   def require_cat_ownership!
-    redirect_to cats_url unless current_user_owns_cat?
+    redirect_to cat_url(current_cat) unless current_user_owns_cat?
   end
 end
