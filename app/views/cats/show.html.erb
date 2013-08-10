@@ -8,3 +8,10 @@
     </tr>
   <% end %>
 </table>
+
+<h2>Rental Requests</h2>
+<ul>
+  <% @cat.rental_requests.order("start_date").each do |req| %>
+    <li><%= req.start_date %> -- <%= req.end_date %></li>
+  <% end %>
+</ul>
