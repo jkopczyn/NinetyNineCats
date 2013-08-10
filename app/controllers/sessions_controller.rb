@@ -9,12 +9,10 @@ class SessionsController < ApplicationController
       # probably should flash errors, but it's late and I'm lazy.
       render :new 
       return
+    else
+      login_user!(user)
+      redirect_to cats_url
     end
-
-    user.reset_session_token!
-    session[:session_token] = user.session_token
-
-    redirect_to cats_url
   end
 
   def destroy
