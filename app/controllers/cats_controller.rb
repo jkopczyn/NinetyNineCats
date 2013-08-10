@@ -1,4 +1,6 @@
 class CatsController < ApplicationController
+  before_filter :require_cat_ownership!, :only => [:edit, :update]
+  
   def create
     @cat = Cat.new(params[:cat])
     @cat.user_id = current_user.id
@@ -8,7 +10,8 @@ class CatsController < ApplicationController
   end
 
   def edit
-    @cat = Cat.find(params[:id])
+    # force evaluation of current_cat
+    current_cat
 
     render :edit
   end
@@ -26,14 +29,23 @@ class CatsController < ApplicationController
   end
 
   def show
-    @cat = Cat.find(params[:id])
+    # force evaluation of current_cat
+    current_cat
 
     render :show
   end
 
   def update
-    @cat = Cat.find(params[:id])
-    @cat.update_attributes!(params[:cat])
+    current_cat.update_attributes!(params[:cat])
     redirect_to cat_url(@cat)
+  end
+
+  private
+  def current_cat
+    @cat ||= Cat.find(params[:id])
+  end
+
+  def require_cat_ownership!
+    redirect_to cats_url unless current_cat.user_id == current_user_id
   end
 end
