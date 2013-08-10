@@ -4,5 +4,6 @@ NinetyNineCats::Application.routes.draw do
     post "approve", :on => :member
     post "deny", :on => :member
   end
+  resource :session, :only => [:create, :new]
   resources :users, :only => [:create, :new]
 end
