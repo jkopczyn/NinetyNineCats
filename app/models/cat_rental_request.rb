@@ -29,6 +29,7 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def does_not_overlap_approved_request
+    return unless self.status == "APPROVED"
     conditions = <<-SQL
       ((cat_id = :cat_id)
         AND (start_date < :end_date)
