@@ -29,11 +29,28 @@ class CatRentalRequest < ActiveRecord::Base
       self.status = "APPROVED"
       self.save!
 
-      self.overlapping_pending_requests.each do |req|
+      overlapping_pending_requests.each do |req|
         req.status = "DENIED"
         req.save!
       end
     end
+  end
+
+  def approved?
+    self.status == "APPROVED"
+  end
+
+  def denied?
+    self.status == "DENIED"
+  end
+
+  def deny!
+    self.status = "DENIED"
+    self.save!
+  end
+
+  def pending?
+    self.status == "PENDING"
   end
 
   private
@@ -70,6 +87,7 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def does_not_overlap_approved_request
+    return unless self.approved?
     unless overlapping_approved_requests.empty?
       errors[:base] << "Request conflicts with existing approved request"
     end
