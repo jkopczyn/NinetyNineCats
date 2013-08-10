@@ -10,7 +10,8 @@ class Cat < ActiveRecord::Base
 
   has_many(
     :rental_requests,
-    :class => "CatRentalRequest",
+    :class_name => "CatRentalRequest",
+    :dependent => :destroy
   )
 
   validates(
