@@ -1,4 +1,9 @@
 class CatsController < ApplicationController
+  def create
+    @cat = Cat.create!(params[:cat])
+    redirect_to cat_url(@cat)
+  end
+
   def edit
     @cat = Cat.find(params[:id])
 
