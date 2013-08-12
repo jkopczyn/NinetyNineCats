@@ -29,6 +29,8 @@ class CatRentalRequest < ActiveRecord::Base
       self.status = "APPROVED"
       self.save!
 
+      # when we approve this request, as a convenience reject all other
+      # overlapping requests for this cat.
       overlapping_pending_requests.each do |req|
         req.status = "DENIED"
         req.save!
@@ -87,7 +89,11 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def does_not_overlap_approved_request
-    return unless self.approved?
+    # A denied request doesn't need to be checked. A pending request should be
+    # checked; users shouldn't be able to make requests for periods during 
+    # which a cat has already been spoken for.
+    return if self.denied?
+
     unless overlapping_approved_requests.empty?
       errors[:base] << "Request conflicts with existing approved request"
     end
