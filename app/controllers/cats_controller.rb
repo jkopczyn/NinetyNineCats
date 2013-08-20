@@ -1,6 +1,4 @@
 class CatsController < ApplicationController
-  # force evaluation of current_cat
-  before_filter :current_cat, :only => [:edit, :show, :update]
   before_filter :require_cat_ownership!, :only => [:edit, :update]
   
   def create
@@ -12,22 +10,22 @@ class CatsController < ApplicationController
   end
 
   def edit
+    @cat = current_cat
     render :edit
   end
 
   def index
     @cats = Cat.all
-
     render :index
   end
 
   def new
     @cat = Cat.new
-
     render :new
   end
 
   def show
+    @cat = current_cat
     render :show
   end
 

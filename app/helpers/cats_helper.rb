@@ -1,6 +1,6 @@
 module CatsHelper
   def current_cat
-    @cat ||= Cat.find(params[:id])
+    @current_cat ||= Cat.find(params[:id])
   end
 
   def current_user_owns_cat?
