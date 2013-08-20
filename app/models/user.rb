@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   attr_accessible :password, :user_name
 
+  has_many :cats
+
   before_validation { |user| user.reset_session_token!(false) }
 
   validates(
