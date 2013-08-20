@@ -1,8 +1,7 @@
 class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
-      # repent, password-storer!
-      t.string :password, :null => false
+      t.string :password_digest, :null => false
       t.string :session_token, :null => false
       t.string :user_name, :null => false
 
@@ -10,5 +9,6 @@ class CreateUsers < ActiveRecord::Migration
     end
 
     add_index :users, :session_token, :unique => true
+    add_index :users, :user_name, :unique => true
   end
 end

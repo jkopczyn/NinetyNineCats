@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   def create
-    user = User.find_by_user_name_and_password(
+    user = User.find_by_credentials(
       params[:user][:user_name],
       params[:user][:password]
     )

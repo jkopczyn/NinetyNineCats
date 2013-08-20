@@ -38,13 +38,14 @@ ActiveRecord::Schema.define(:version => 20130810051907) do
   add_index "cats", ["user_id"], :name => "index_cats_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "password",      :null => false
-    t.string   "session_token", :null => false
-    t.string   "user_name",     :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.string   "password_digest", :null => false
+    t.string   "session_token",   :null => false
+    t.string   "user_name",       :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   add_index "users", ["session_token"], :name => "index_users_on_session_token", :unique => true
+  add_index "users", ["user_name"], :name => "index_users_on_user_name", :unique => true
 
 end
