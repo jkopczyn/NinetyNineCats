@@ -35,9 +35,11 @@ class CatsController < ApplicationController
   end
 
   private
-  include CatsHelper
+  def current_cat
+    @current_cat ||= Cat.find(params[:id])
+  end
 
   def require_cat_ownership!
-    redirect_to cat_url(current_cat) unless current_user_owns_cat?
+    redirect_to cat_url(current_cat) unless current_user.owns_cat?(current_cat)
   end
 end
