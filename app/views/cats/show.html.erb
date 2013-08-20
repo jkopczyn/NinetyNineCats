@@ -21,22 +21,7 @@
     <th>Status</th>
   </tr>
   <% @cat.rental_requests.order("start_date").each do |req| %>
-    <tr>
-      <td><%= req.start_date %></td>
-      <td><%= req.end_date %></td>
-      <td>
-        <% if req.pending? %>
-          <% if current_user.owns_cat?(@cat) %>
-            <%= button_to "Approve", approve_cat_rental_request_url(req) %>
-            <%= button_to "Deny", deny_cat_rental_request_url(req) %>
-          <% else %>
-            <%= req.status %>
-          <% end %>
-        <% else %>
-          <%= req.status %>
-        <% end %>
-      </td>
-    </tr>
+    <%= render "req_tr", :req => req %>
   <% end %>
 </table>
 
