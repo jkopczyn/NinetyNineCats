@@ -1,7 +1,7 @@
 class CatsController < ApplicationController
-  before_filter :require_user!, :only => [:edit, :update]
+  before_filter :require_user!, :only => [:new, :create, :edit, :update]
   before_filter :require_cat_ownership!, :only => [:edit, :update]
-  
+
   def create
     @cat = Cat.new(params[:cat])
     @cat.user_id = current_user.id
