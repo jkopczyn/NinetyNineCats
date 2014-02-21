@@ -6,7 +6,6 @@ class Cat < ActiveRecord::Base
     "blue"
   ]
 
-  attr_accessible :age, :birth_date, :color, :name, :sex
 
   belongs_to(
     :owner,

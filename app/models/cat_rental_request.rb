@@ -5,7 +5,6 @@ class CatRentalRequest < ActiveRecord::Base
     "PENDING"
   ]
 
-  attr_accessible :cat_id, :end_date, :start_date, :status
 
   belongs_to :cat
 

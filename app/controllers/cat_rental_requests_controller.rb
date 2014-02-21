@@ -8,7 +8,7 @@ class CatRentalRequestsController < ApplicationController
   end
 
   def create
-    @rental_request = CatRentalRequest.create!(params[:cat_rental_request])
+    @rental_request = CatRentalRequest.create!(cat_rental_request_params)
     redirect_to cat_url(@rental_request.cat)
   end
 
@@ -33,4 +33,9 @@ class CatRentalRequestsController < ApplicationController
   def require_cat_ownership!
     redirect_to cat_url(current_cat) unless current_user.owns_cat?(current_cat)
   end
+
+    private
+    def cat_rental_request_params
+      params.require(:cat_rental_request).permit(:cat_id, :end_date, :start_date, :status)
+    end
 end

@@ -3,7 +3,7 @@ class CatsController < ApplicationController
   before_filter :require_cat_ownership!, :only => [:edit, :update]
 
   def create
-    @cat = Cat.new(params[:cat])
+    @cat = Cat.new(cat_params)
     @cat.user_id = current_user.id
     @cat.save!
 
@@ -31,7 +31,7 @@ class CatsController < ApplicationController
   end
 
   def update
-    current_cat.update_attributes!(params[:cat])
+    current_cat.update_attributes!(cat_params)
     redirect_to cat_url(current_cat)
   end
 
@@ -43,4 +43,9 @@ class CatsController < ApplicationController
   def require_cat_ownership!
     redirect_to cat_url(current_cat) unless current_user.owns_cat?(current_cat)
   end
+
+    private
+    def cat_params
+      params.require(:cat).permit(:age, :birth_date, :color, :name, :sex)
+    end
 end
