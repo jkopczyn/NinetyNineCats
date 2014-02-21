@@ -5,7 +5,6 @@ class CatRentalRequest < ActiveRecord::Base
     "PENDING"
   ]
 
-
   belongs_to :cat
 
   before_validation :assign_pending_status
@@ -89,7 +88,7 @@ class CatRentalRequest < ActiveRecord::Base
 
   def does_not_overlap_approved_request
     # A denied request doesn't need to be checked. A pending request should be
-    # checked; users shouldn't be able to make requests for periods during 
+    # checked; users shouldn't be able to make requests for periods during
     # which a cat has already been spoken for.
     return if self.denied?
 
@@ -98,3 +97,4 @@ class CatRentalRequest < ActiveRecord::Base
     end
   end
 end
+

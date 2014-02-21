@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-
   has_many :cats
 
   before_validation { |user| user.reset_session_token!(false) }
@@ -39,3 +38,4 @@ class User < ActiveRecord::Base
     self.save!
   end
 end
+

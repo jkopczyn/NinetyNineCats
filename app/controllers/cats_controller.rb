@@ -44,8 +44,9 @@ class CatsController < ApplicationController
     redirect_to cat_url(current_cat) unless current_user.owns_cat?(current_cat)
   end
 
-    private
-    def cat_params
-      params.require(:cat).permit(:age, :birth_date, :color, :name, :sex)
-    end
+  private
+  def cat_params
+    params.require(:cat).permit(:age, :birth_date, :color, :name, :sex)
+  end
 end
+

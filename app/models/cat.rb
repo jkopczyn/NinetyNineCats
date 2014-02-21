@@ -6,7 +6,6 @@ class Cat < ActiveRecord::Base
     "blue"
   ]
 
-
   belongs_to(
     :owner,
     :class_name => "User",
@@ -31,5 +30,6 @@ class Cat < ActiveRecord::Base
 
   validates :age, :numericality => { :only_integer => true }
   validates :color, :inclusion => CAT_COLORS
-  validates :sex, :inclusion => ["M" ,"F"]  
+  validates :sex, :inclusion => ["M" ,"F"]
 end
+

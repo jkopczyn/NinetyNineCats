@@ -6,8 +6,8 @@ class SessionsController < ApplicationController
     )
 
     if user.nil?
-      # probably should flash errors, but it's late and I'm lazy.
-      render :new 
+      flash[:errors] = ["Incorrect username and/or password"]
+      render :new
       return
     else
       login_user!(user)
@@ -26,3 +26,4 @@ class SessionsController < ApplicationController
     render :new
   end
 end
+

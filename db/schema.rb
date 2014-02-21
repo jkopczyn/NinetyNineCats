@@ -9,43 +9,46 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130810051907) do
+ActiveRecord::Schema.define(version: 20130810051907) do
 
-  create_table "cat_rental_requests", :force => true do |t|
-    t.integer  "cat_id",     :null => false
-    t.date     "end_date",   :null => false
-    t.date     "start_date", :null => false
-    t.string   "status",     :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "cat_rental_requests", force: true do |t|
+    t.integer  "cat_id",     null: false
+    t.date     "end_date",   null: false
+    t.date     "start_date", null: false
+    t.string   "status",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "cat_rental_requests", ["cat_id"], :name => "index_cat_rental_requests_on_cat_id"
+  add_index "cat_rental_requests", ["cat_id"], name: "index_cat_rental_requests_on_cat_id", using: :btree
 
-  create_table "cats", :force => true do |t|
-    t.integer  "age",        :null => false
-    t.date     "birth_date", :null => false
-    t.string   "color",      :null => false
-    t.string   "name",       :null => false
-    t.string   "sex",        :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.integer  "user_id",    :null => false
+  create_table "cats", force: true do |t|
+    t.integer  "age",        null: false
+    t.date     "birth_date", null: false
+    t.string   "color",      null: false
+    t.string   "name",       null: false
+    t.string   "sex",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id",    null: false
   end
 
-  add_index "cats", ["user_id"], :name => "index_cats_on_user_id"
+  add_index "cats", ["user_id"], name: "index_cats_on_user_id", using: :btree
 
-  create_table "users", :force => true do |t|
-    t.string   "password_digest", :null => false
-    t.string   "session_token",   :null => false
-    t.string   "user_name",       :null => false
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+  create_table "users", force: true do |t|
+    t.string   "password_digest", null: false
+    t.string   "session_token",   null: false
+    t.string   "user_name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "users", ["session_token"], :name => "index_users_on_session_token", :unique => true
-  add_index "users", ["user_name"], :name => "index_users_on_user_name", :unique => true
+  add_index "users", ["session_token"], name: "index_users_on_session_token", unique: true, using: :btree
+  add_index "users", ["user_name"], name: "index_users_on_user_name", unique: true, using: :btree
 
 end
