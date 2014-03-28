@@ -43,12 +43,12 @@ ActiveRecord::Schema.define(version: 20130810051907) do
   create_table "users", force: true do |t|
     t.string   "password_digest", null: false
     t.string   "session_token",   null: false
-    t.string   "user_name",       null: false
+    t.string   "username",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "users", ["session_token"], name: "index_users_on_session_token", unique: true, using: :btree
-  add_index "users", ["user_name"], name: "index_users_on_user_name", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end

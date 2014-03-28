@@ -1,10 +1,5 @@
 class Cat < ActiveRecord::Base
-  CAT_COLORS = [
-    "black",
-    "white",
-    "red",
-    "blue"
-  ]
+  CAT_COLORS = %w(black white orange brown)
 
   belongs_to(
     :owner,
@@ -30,6 +25,6 @@ class Cat < ActiveRecord::Base
 
   validates :age, :numericality => { :only_integer => true }
   validates :color, :inclusion => CAT_COLORS
-  validates :sex, :inclusion => ["M" ,"F"]
+  validates :sex, :inclusion => %w(M F)
 end
 
