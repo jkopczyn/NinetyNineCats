@@ -1,9 +1,13 @@
 class UsersController < ApplicationController
   def create
-    @user = User.create!(user_params)
-    login_user!(@user)
-
-    redirect_to cats_url
+    @user = User.new(user_params)
+    if @user.save
+      login_user!(@user)
+      redirect_to cats_url
+    else
+      flash.now[:errors] = @user.errors.full_messages
+      render :new
+    end
   end
 
   def new

@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_many :cats
 
-  before_validation { |user| user.reset_session_token!(false) }
+  before_validation :ensure_session_token
 
   validates(
     :password_digest,
@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
     :user_name,
     :presence => true
   )
-
+  
   validates :user_name, :uniqueness => true
 
   def self.find_by_credentials(user_name, password)
@@ -28,7 +28,14 @@ class User < ActiveRecord::Base
 
   def password=(password)
     @password = password
-    self.password_digest = BCrypt::Password.create(password).to_s
+    # BCrypt will happily encrypt an empty string
+    if @password && !@password.empty?
+      self.password_digest = BCrypt::Password.create(password).to_s
+    end
+  end
+  
+  def ensure_session_token
+    self.session_token ||= SecureRandom.urlsafe_base64(16)
   end
 
   def reset_session_token!(force = true)

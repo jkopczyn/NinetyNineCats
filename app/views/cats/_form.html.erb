@@ -56,9 +56,9 @@
     name="cat[sex]"
     value="F"
     id="cat_sex_female"
-    <%= cat.sex == "M" ? "checked" : "" %>>
+    <%= cat.sex == "F" ? "checked" : "" %>>
   <label for="cat_sex_female">Female</label>
   <br>
 
-  <input type="submit" value="Create cat!">
+  <input type="submit" value="<%= cat.persisted? ? 'Update '  : 'Create '  %>cat!">
 </form>

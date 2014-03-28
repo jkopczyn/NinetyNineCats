@@ -1,5 +1,7 @@
 <h1>Create Rental Request</h1>
 
+<%= render "shared/errors" %>
+
 <form action="<%= cat_rental_requests_url %>" method="post">
   <input
     type="hidden"
@@ -10,7 +12,7 @@
   <select name="cat_rental_request[cat_id]" id="cat_rental_request_cat_id">
     <option></option>
     <% Cat.all.each do |cat| %>
-      <option value="<%= cat.id %>"><%= cat.name %></option>
+      <option <%= @rental_request.cat_id == cat.id ? "selected" : "" %> value="<%= cat.id %>"><%= cat.name %></option>
     <% end %>
   </select>
   <br>
@@ -19,6 +21,7 @@
   <input
     type="date"
     name="cat_rental_request[start_date]"
+    value="<%= @rental_request.start_date %>"
     id="cat_rental_request_start_date">
   <br>
 
@@ -26,6 +29,7 @@
   <input
     type="date"
     name="cat_rental_request[end_date]"
+    value="<%= @rental_request.end_date %>"
     id="cat_rental_request_end_date">
   <br>
 

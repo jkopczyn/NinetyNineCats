@@ -8,8 +8,13 @@ class CatRentalRequestsController < ApplicationController
   end
 
   def create
-    @rental_request = CatRentalRequest.create!(cat_rental_request_params)
-    redirect_to cat_url(@rental_request.cat)
+    @rental_request = CatRentalRequest.new(cat_rental_request_params)
+    if @rental_request.save
+      redirect_to cat_url(@rental_request.cat)
+    else
+      flash[:errors] = @rental_request.errors.full_messages
+      render :new
+    end
   end
 
   def deny
