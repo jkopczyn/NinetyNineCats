@@ -1,6 +1,6 @@
 class CatRentalRequestsController < ApplicationController
-  before_filter :require_user!, :only => [:approve, :deny]
-  before_filter :require_cat_ownership!, :only => [:approve, :deny]
+  before_action :require_user!, :only => [:approve, :deny]
+  before_action :require_cat_ownership!, :only => [:approve, :deny]
 
   def approve
     current_cat_rental_request.approve!
