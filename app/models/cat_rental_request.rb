@@ -29,10 +29,7 @@ class CatRentalRequest < ActiveRecord::Base
 
       # when we approve this request, as a convenience reject all other
       # overlapping requests for this cat.
-      overlapping_pending_requests.each do |req|
-        req.status = "DENIED"
-        req.save!
-      end
+      overlapping_pending_requests.update_all(status: 'DENIED')
     end
   end
 
@@ -60,9 +57,11 @@ class CatRentalRequest < ActiveRecord::Base
 
   def overlapping_requests
     conditions = <<-SQL
-      ((cat_id = :cat_id)
-        AND (start_date < :end_date)
-        AND (end_date > :start_date))
+      (
+        (cat_id = :cat_id)
+        AND ((start_date BETWEEN :start_date AND :end_date)
+              OR (end_date BETWEEN :start_date AND :end_date))
+      )
     SQL
 
     overlapping_requests = CatRentalRequest.where(conditions, {
