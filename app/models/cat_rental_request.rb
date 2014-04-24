@@ -59,8 +59,15 @@ class CatRentalRequest < ActiveRecord::Base
     conditions = <<-SQL
       (
         (cat_id = :cat_id)
-        AND ((start_date BETWEEN :start_date AND :end_date)
-              OR (end_date BETWEEN :start_date AND :end_date))
+        AND (
+          (
+            (start_date BETWEEN :start_date AND :end_date)
+            OR (end_date BETWEEN :start_date AND :end_date)
+          ) OR (
+            (:start_date BETWEEN start_date AND end_date)
+            OR (:end_date BETWEEN start_date AND end_date)
+          )
+        )
       )
     SQL
 
