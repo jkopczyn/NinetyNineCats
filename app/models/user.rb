@@ -1,21 +1,29 @@
 class User < ActiveRecord::Base
+  attr_reader :password
+
   has_many :cats
 
   before_validation :ensure_session_token
 
   validates :password_digest, :presence => true
-  validates :password, :length => { :minimum => 6, :allow_nil => true }
+  validates(
+    :password,
+    :length => { :minimum => 6, :allow_nil => true }
+  )
   validates :session_token, :presence => true, :uniqueness => true
-  validates :username, :presence => true, :uniqueness => true
+  validates :user_name, :presence => true, :uniqueness => true
 
-  def self.find_by_credentials(username, password)
-    user = User.find_by_username(username)
+  def self.find_by_credentials(user_name, password)
+    user = User.find_by_username(user_name)
 
-    user.try(:is_password?, password) ? user : nil
+    return nil if user.nil?
+    user.is_password?(password) ? user : nil
   end
 
   def is_password?(unencrypted_password)
-    BCrypt::Password.new(self.password_digest).is_password?(unencrypted_password)
+    BCrypt::Password
+      .new(self.password_digest)
+      .is_password?(unencrypted_password)
   end
 
   def owns_cat?(cat)
@@ -26,7 +34,8 @@ class User < ActiveRecord::Base
     # BCrypt will happily encrypt an empty string
     if unencrypted_password.present?
       @password = unencrypted_password
-      self.password_digest = BCrypt::Password.create(unencrypted_password)
+      self.password_digest =
+        BCrypt::Password.create(unencrypted_password)
     end
   end
 
