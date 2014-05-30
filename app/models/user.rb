@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   validates :user_name, :presence => true, :uniqueness => true
 
   def self.find_by_credentials(user_name, password)
-    user = User.find_by_username(user_name)
+    user = User.find_by(user_name: user_name)
 
     return nil if user.nil?
     user.is_password?(password) ? user : nil
