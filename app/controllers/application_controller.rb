@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   private
+  def require_no_user!
+    redirect_to cats_url unless current_user.nil?
+  end
 
   def current_user
     return nil unless session[:session_token]

@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  before_action :require_no_user!, only: [:create, :new]
+
   def create
     user = User.find_by_credentials(
       params[:user][:username],
