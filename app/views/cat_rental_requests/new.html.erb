@@ -9,10 +9,15 @@
     value="<%= form_authenticity_token %>">
 
   <label for="cat_rental_request_cat_id">Cat</label>
-  <select name="cat_rental_request[cat_id]" id="cat_rental_request_cat_id">
+  <select name="cat_rental_request[cat_id]"
+          id="cat_rental_request_cat_id">
     <option></option>
     <% Cat.all.each do |cat| %>
-      <option <%= @rental_request.cat_id == cat.id ? "selected" : "" %> value="<%= cat.id %>"><%= cat.name %></option>
+      <% selected = @rental_request.cat_id == cat.id %>
+      <option <%= selected ? "selected" : "" %>
+              value="<%= cat.id %>">
+        <%= cat.name %>
+      </option>
     <% end %>
   </select>
   <br>

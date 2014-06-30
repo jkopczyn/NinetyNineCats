@@ -8,7 +8,6 @@ class SessionsController < ApplicationController
     if user.nil?
       flash.now[:errors] = ["Incorrect username and/or password"]
       render :new
-      return
     else
       login_user!(user)
       redirect_to cats_url
@@ -16,9 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    current_user.reset_session_token!
-    session[:session_token] = nil
-
+    logout_user!
     redirect_to new_session_url
   end
 
@@ -26,4 +23,3 @@ class SessionsController < ApplicationController
     render :new
   end
 end
-

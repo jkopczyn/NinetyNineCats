@@ -1,5 +1,6 @@
 class CatsController < ApplicationController
-  before_action :require_user!, :only => [:new, :create, :edit, :update]
+  # Do allow unlogged in users to browse cats.
+  before_action :require_user!, only: [:new, :create, :edit, :update]
 
   def index
     @cats = Cat.all
@@ -46,7 +47,7 @@ class CatsController < ApplicationController
   private
 
   def cat_params
-    params.require(:cat).permit(:age, :birth_date, :color, :name, :sex)
+    params.require(:cat)
+      .permit(:age, :birth_date, :color, :name, :sex)
   end
 end
-

@@ -60,5 +60,6 @@
   <label for="cat_sex_female">Female</label>
   <br>
 
-  <input type="submit" value="<%= cat.persisted? ? 'Update '  : 'Create '  %>cat!">
+  <% submit_text = (cat.persisted? ? 'Update' : 'Create') + ' cat!' %>
+  <input type="submit" value="<%= submit_text %>">
 </form>

@@ -1,6 +1,6 @@
 class CatRentalRequestsController < ApplicationController
-  before_action :require_user!, :only => [:approve, :deny]
-  before_action :require_cat_ownership!, :only => [:approve, :deny]
+  before_action :require_user!, only: [:approve, :deny]
+  before_action :require_cat_ownership!, only: [:approve, :deny]
 
   def approve
     current_cat_rental_request.approve!
@@ -12,7 +12,7 @@ class CatRentalRequestsController < ApplicationController
     if @rental_request.save
       redirect_to cat_url(@rental_request.cat)
     else
-      flash[:errors] = @rental_request.errors.full_messages
+      flash.now[:errors] = @rental_request.errors.full_messages
       render :new
     end
   end
@@ -28,7 +28,8 @@ class CatRentalRequestsController < ApplicationController
 
   private
   def current_cat_rental_request
-    @rental_request ||= CatRentalRequest.includes(:cat).find(params[:id])
+    @rental_request ||=
+      CatRentalRequest.includes(:cat).find(params[:id])
   end
 
   def current_cat
@@ -36,11 +37,12 @@ class CatRentalRequestsController < ApplicationController
   end
 
   def require_cat_ownership!
-    redirect_to cat_url(current_cat) unless current_user.owns_cat?(current_cat)
+    return if current_user.owns_cat?(current_cat)
+    redirect_to cat_url(current_cat)
   end
 
   def cat_rental_request_params
-    params.require(:cat_rental_request).permit(:cat_id, :end_date, :start_date, :status)
+    params.require(:cat_rental_request)
+      .permit(:cat_id, :end_date, :start_date, :status)
   end
 end
-

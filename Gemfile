@@ -40,7 +40,7 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-gem 'bcrypt-ruby', :require => 'bcrypt'
+gem 'bcrypt-ruby', require: 'bcrypt'
 gem 'pg'
 group :development, :test do
   gem 'rspec-rails'
