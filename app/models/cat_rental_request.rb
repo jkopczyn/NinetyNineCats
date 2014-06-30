@@ -1,24 +1,18 @@
 class CatRentalRequest < ActiveRecord::Base
-  STATUS_STATES = [
-    "APPROVED",
-    "DENIED",
-    "PENDING"
-  ]
+  STATUS_STATES = %w(APPROVED DENIED PENDING)
 
   belongs_to :cat
 
-  before_validation :assign_pending_status
+  after_initialize :assign_pending_status
 
   validates(
     :cat_id,
     :end_date,
     :start_date,
     :status,
-    :presence => true
+    presence: true
   )
-
-  validates :status, :inclusion => STATUS_STATES
-
+  validates :status, inclusion: STATUS_STATES
   validate :does_not_overlap_approved_request
 
   def approve!
@@ -27,8 +21,8 @@ class CatRentalRequest < ActiveRecord::Base
       self.status = "APPROVED"
       self.save!
 
-      # when we approve this request, as a convenience reject all other
-      # overlapping requests for this cat.
+      # when we approve this request, we reject all other overlapping
+      # requests for this cat.
       overlapping_pending_requests.update_all(status: 'DENIED')
     end
   end
@@ -56,32 +50,20 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def overlapping_requests
-    conditions = <<-SQL
-      (
-        (cat_id = :cat_id)
-        AND (
-          (
-            (start_date BETWEEN :start_date AND :end_date)
-            OR (end_date BETWEEN :start_date AND :end_date)
-          ) OR (
-            (:start_date BETWEEN start_date AND end_date)
-            OR (:end_date BETWEEN start_date AND end_date)
-          )
-        )
-      )
-    SQL
-
-    overlapping_requests = CatRentalRequest.where(conditions, {
-      :cat_id => self.cat_id,
-      :start_date => self.start_date,
-      :end_date => self.end_date
-    })
-
-    if self.id.nil?
-      overlapping_requests
-    else
-      overlapping_requests.where("id != ?", self.id)
-    end
+    # Ugly query logic. We want:
+    # 1. A different request
+    # 2. That is for the same cat.
+    # 3. That overlaps. A pair of overlapping requests means that one
+    #    request either starts or ends in the middle of the other.
+    self
+      .where("(:id IS NULL) OR (id != :id)", id: self.id)
+      .where(cat_id: cat_id)
+      .where(<<-SQL, start_date: start_date, end_date: end_date)
+((start_date BETWEEN :start_date AND :end_date) OR
+  (end_date BETWEEN :start_date AND :end_date)) OR
+((:start_date BETWEEN start_date AND end_date) OR
+  (:end_date BETWEEN start_date AND end_date)
+SQL
   end
 
   def overlapping_approved_requests
@@ -93,14 +75,14 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def does_not_overlap_approved_request
-    # A denied request doesn't need to be checked. A pending request should be
-    # checked; users shouldn't be able to make requests for periods during
-    # which a cat has already been spoken for.
+    # A denied request doesn't need to be checked. A pending request
+    # should be checked; users shouldn't be able to make requests for
+    # periods during which a cat has already been spoken for.
     return if self.denied?
 
     unless overlapping_approved_requests.empty?
-      errors[:base] << "Request conflicts with existing approved request"
+      errors[:base] <<
+        "Request conflicts with existing approved request"
     end
   end
 end
-

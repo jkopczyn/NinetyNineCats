@@ -3,15 +3,17 @@ class User < ActiveRecord::Base
 
   has_many :cats
 
-  before_validation :ensure_session_token
+  after_initialize :ensure_session_token
 
-  validates :password_digest, :presence => true
+  validates :password_digest, presence: true
+  # If a password was set, we validate it meets the requirements.
+  # Note the `allow_nil`.
   validates(
     :password,
-    :length => { :minimum => 6, :allow_nil => true }
+    length: { minimum: 6, allow_nil: true }
   )
-  validates :session_token, :presence => true, :uniqueness => true
-  validates :username, :presence => true, :uniqueness => true
+  validates :session_token, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true
 
   def self.find_by_credentials(username, password)
     user = User.find_by(username: username)
@@ -20,23 +22,21 @@ class User < ActiveRecord::Base
     user.is_password?(password) ? user : nil
   end
 
-  def is_password?(unencrypted_password)
-    BCrypt::Password
-      .new(self.password_digest)
-      .is_password?(unencrypted_password)
+  def is_password?(password)
+    BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
   def owns_cat?(cat)
     cat.user_id == self.id
   end
 
-  def password=(unencrypted_password)
-    # BCrypt will happily encrypt an empty string
-    if unencrypted_password.present?
-      @password = unencrypted_password
-      self.password_digest =
-        BCrypt::Password.create(unencrypted_password)
-    end
+  def password=(password)
+    # BCrypt will happily encrypt an empty string, thus falsely
+    # setting the password_digest. Ugh.
+    return unless password.present?
+
+    @password = password
+    self.password_digest = BCrypt::Password.create(password)
   end
 
   def reset_session_token!
@@ -51,4 +51,3 @@ class User < ActiveRecord::Base
     self.session_token ||= SecureRandom.urlsafe_base64(16)
   end
 end
-
