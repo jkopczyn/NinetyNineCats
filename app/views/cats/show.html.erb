@@ -13,6 +13,10 @@
   <% end %>
 </table>
 
+<% if @cat.owner == current_user %>
+  <%= link_to "Edit #{@cat.name}", edit_cat_url(@cat) %>
+<% end %>
+
 <h2>Rental Requests</h2>
 <table>
   <tr>
