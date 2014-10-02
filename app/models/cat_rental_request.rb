@@ -52,15 +52,81 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def overlapping_requests
-    # Ugly query logic. We want:
+    # ======================================
+    #
+    # Ranges can overlap in several ways:
+    #
+    #   |-----|       |-----|     |---|
+    #       |-----|   |-----|   |-------|
+    #     (2x)                    (2x)
+    #
+    # ======================================
+    #
+    # However, it is easier to think of the
+    # two cases where they do not overlap:
+    #
+    #    [Case 1]
+    #
+    #        A              B
+    #    |-------|      |-------|
+    #    A(s)    A(e)   B(s)    B(e)
+    #
+    # The start point of B comes after the
+    # end point of A. Thus: B(s) > A(e)
+    #
+    #
+    #    [Case 2]
+    #
+    #        B              A
+    #    |-------|      |-------|
+    #    B(s)    B(e)   A(s)    A(e)
+    #
+    # The start point of A comes after the
+    # end point of B. Thus: A(s) > B(e)
+    #
+    # ======================================
+    #
+    # Taking those two cases, we can say
+    # there's no overlap when:
+    #
+    #   B(s) > A(e) || A(s) > B(e)
+    #
+    # ======================================
+    #
+    # We can negate this to get all cases
+    # where there must be overlap:
+    #
+    #   !( B(s) > A(e) || A(s) > B(e) )
+    #
+    # Personally, I find this most clear.
+    #
+    # In order for overlap to occur, the
+    # other range cannot be entirely before
+    # it or entirely after it.
+    #
+    # ======================================
+    #
+    # You could distribute the negation:
+    #
+    #   !( B(s) > A(e) ) && !( A(s) > B(e) )
+    #
+    # And take it even further, making it
+    # shorter, but perhaps less intuitive:
+    #
+    #   B(s) <= A(e) && A(s) <= B(e)
+    #
+    # ======================================
+
+    # We want:
     # 1. A different request
     # 2. That is for the same cat.
     # 3. That overlaps.
+
     CatRentalRequest
       .where("(:id IS NULL) OR (id != :id)", id: self.id)
       .where(cat_id: cat_id)
       .where(<<-SQL, start_date: start_date, end_date: end_date)
-        (start_date <= :end_date) AND (end_date >= :start_date)
+       NOT( (start_date > :end_date) OR (end_date < :start_date) )
 SQL
   end
 
