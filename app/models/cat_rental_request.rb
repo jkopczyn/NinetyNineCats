@@ -55,16 +55,12 @@ class CatRentalRequest < ActiveRecord::Base
     # Ugly query logic. We want:
     # 1. A different request
     # 2. That is for the same cat.
-    # 3. That overlaps. A pair of overlapping requests means that one
-    #    request either starts or ends in the middle of the other.
+    # 3. That overlaps.
     CatRentalRequest
       .where("(:id IS NULL) OR (id != :id)", id: self.id)
       .where(cat_id: cat_id)
       .where(<<-SQL, start_date: start_date, end_date: end_date)
-((start_date BETWEEN :start_date AND :end_date) OR
-  (end_date BETWEEN :start_date AND :end_date)) OR
-((:start_date BETWEEN start_date AND end_date) OR
-  (:end_date BETWEEN start_date AND end_date))
+        (start_date <= :end_date) AND (end_date >= :start_date)
 SQL
   end
 
