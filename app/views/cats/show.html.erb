@@ -30,4 +30,6 @@
   <% end %>
 </table>
 
-<%= link_to "Make new request", new_cat_rental_request_url %>
+<% if logged_in? %>
+  <%= link_to "Make new request", new_cat_rental_request_url %>
+<% end %>
