@@ -15,6 +15,7 @@ class CatRentalRequest < ActiveRecord::Base
     presence: true
   )
   validates :status, inclusion: STATUS_STATES
+  validate :start_must_come_before_end
   validate :does_not_overlap_approved_request
 
   def approve!
@@ -148,5 +149,11 @@ SQL
       errors[:base] <<
         "Request conflicts with existing approved request"
     end
+  end
+
+  def start_must_come_before_end
+    return if start_date < end_date
+    errors[:start_date] << "must come before end date"
+    errors[:end_date] << "must come after start date"
   end
 end
