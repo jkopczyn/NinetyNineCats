@@ -1,4 +1,7 @@
+require 'action_view'
 class Cat < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper
+
   CAT_COLORS = %w(black white orange brown)
 
   belongs_to(
@@ -13,8 +16,11 @@ class Cat < ActiveRecord::Base
     dependent: :destroy
   )
 
+  def age
+    time_ago_in_words(birth_date)
+  end
+
   validates(
-    :age,
     :birth_date,
     :color,
     :name,
@@ -23,7 +29,8 @@ class Cat < ActiveRecord::Base
     presence: true
   )
 
-  validates :age, numericality: { only_integer: true }
   validates :color, inclusion: CAT_COLORS
   validates :sex, inclusion: %w(M F)
+  validates_date :birth_date, :before => lambda { Date.today },
+                              :before_message => "must be in the past"
 end

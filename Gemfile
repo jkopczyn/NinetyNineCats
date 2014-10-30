@@ -42,6 +42,7 @@ end
 # gem 'debugger', group: [:development, :test]
 gem 'bcrypt-ruby', require: 'bcrypt'
 gem 'pg'
+gem 'validates_timeliness', '~> 3.0'
 
 group :development do
   gem 'better_errors'

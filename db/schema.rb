@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(version: 20140630020430) do
   add_index "cat_rental_requests", ["user_id"], name: "index_cat_rental_requests_on_user_id", using: :btree
 
   create_table "cats", force: true do |t|
-    t.integer  "age",                   null: false
     t.date     "birth_date",            null: false
     t.string   "color",                 null: false
     t.string   "name",                  null: false
