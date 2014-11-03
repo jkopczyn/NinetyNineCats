@@ -31,10 +31,6 @@ class User < ActiveRecord::Base
   end
 
   def password=(password)
-    # BCrypt will happily encrypt an empty string, thus falsely
-    # setting the password_digest. Ugh.
-    return unless password.present?
-
     @password = password
     self.password_digest = BCrypt::Password.create(password)
   end
