@@ -49,4 +49,4 @@ group :development do
   gem 'binding_of_caller'
 end
 
-gem 'newrelic_rpm', group: :production
+gem 'newrelic_rpm'
